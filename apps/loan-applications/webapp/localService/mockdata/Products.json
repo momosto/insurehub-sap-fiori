@@ -1,0 +1,32 @@
+[
+  {
+    "Product": "SALA",
+    "ProductName": "Salary-Based Loan",
+    "InterestRate": "36.00",
+    "MaxTermMonths": 24
+  },
+  {
+    "Product": "SMEW",
+    "ProductName": "SME Working Capital",
+    "InterestRate": "42.00",
+    "MaxTermMonths": 12
+  },
+  {
+    "Product": "SOLR",
+    "ProductName": "Solar Home System Loan",
+    "InterestRate": "30.00",
+    "MaxTermMonths": 18
+  },
+  {
+    "Product": "SCHF",
+    "ProductName": "School Fees Loan",
+    "InterestRate": "32.00",
+    "MaxTermMonths": 12
+  },
+  {
+    "Product": "AGRI",
+    "ProductName": "Agri Input Loan",
+    "InterestRate": "28.00",
+    "MaxTermMonths": 9
+  }
+]

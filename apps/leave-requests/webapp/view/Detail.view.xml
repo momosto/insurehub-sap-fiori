@@ -1,0 +1,129 @@
+<mvc:View
+	controllerName="insurehub.hr.leaverequests.controller.Detail"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:uxap="sap.uxap"
+	xmlns:form="sap.ui.layout.form"
+	core:require="{ DateType: 'sap/ui/model/type/Date', DateTimeType: 'sap/ui/model/type/DateTime' }">
+	<uxap:ObjectPageLayout
+		id="objectPage"
+		showTitleInHeaderContent="true"
+		alwaysShowContentHeader="false"
+		upperCaseAnchorBar="false"
+		showFooter="{= ${Status} === 'P' }"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="0">
+
+		<uxap:headerTitle>
+			<uxap:ObjectPageDynamicHeaderTitle>
+				<uxap:expandedHeading>
+					<Title text="{EmployeeName}" wrapping="true"/>
+				</uxap:expandedHeading>
+				<uxap:snappedHeading>
+					<HBox alignItems="Center">
+						<Avatar src="sap-icon://employee" displaySize="S" class="sapUiTinyMarginEnd"/>
+						<Title text="{EmployeeName} – {LeaveTypeText}" wrapping="true"/>
+					</HBox>
+				</uxap:snappedHeading>
+				<uxap:expandedContent>
+					<Text text="{RequestId}"/>
+				</uxap:expandedContent>
+				<uxap:navigationActions>
+					<OverflowToolbarButton
+						type="Transparent"
+						icon="{= ${appView>/layout} === 'MidColumnFullScreen' ? 'sap-icon://exit-full-screen' : 'sap-icon://full-screen' }"
+						tooltip="{= ${appView>/layout} === 'MidColumnFullScreen' ? ${i18n>exitFullScreen} : ${i18n>fullScreen} }"
+						press=".onToggleFullScreen"
+						visible="{= !${device>/system/phone} }"/>
+					<OverflowToolbarButton
+						type="Transparent"
+						icon="sap-icon://decline"
+						tooltip="{i18n>closeColumn}"
+						press=".onClose"/>
+				</uxap:navigationActions>
+				<uxap:actions>
+					<Button
+						text="{i18n>withdrawButton}"
+						type="Transparent"
+						press=".onWithdraw"
+						visible="{= ${Status} === 'P' &amp;&amp; ${EmployeeName} === ${appView>/currentUser} }"/>
+				</uxap:actions>
+			</uxap:ObjectPageDynamicHeaderTitle>
+		</uxap:headerTitle>
+
+		<uxap:headerContent>
+			<FlexBox wrap="Wrap" fitContainer="true">
+				<Avatar src="sap-icon://employee" displaySize="L" class="sapUiMediumMarginEnd sapUiSmallMarginBottom"/>
+				<VBox class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+					<Label text="{i18n>detailLeaveType}"/>
+					<ObjectStatus text="{LeaveTypeText}" class="sapMObjectStatusLarge"/>
+				</VBox>
+				<VBox class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+					<Label text="{i18n>detailDays}"/>
+					<ObjectNumber number="{Days}" unit="{i18n>days}" emphasized="true" class="sapMObjectNumberLarge"/>
+				</VBox>
+				<VBox class="sapUiSmallMarginBottom">
+					<Label text="{i18n>detailDecision}"/>
+					<ObjectStatus
+						text="{path: 'Status', formatter: '.formatter.statusText'}"
+						state="{path: 'Status', formatter: '.formatter.statusState'}"
+						icon="{path: 'Status', formatter: '.formatter.statusIcon'}"
+						inverted="true"
+						class="sapMObjectStatusLarge"/>
+				</VBox>
+			</FlexBox>
+		</uxap:headerContent>
+
+		<uxap:sections>
+			<uxap:ObjectPageSection title="{i18n>sectionRequest}" titleUppercase="false">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection>
+						<form:SimpleForm
+							editable="false"
+							layout="ColumnLayout"
+							columnsM="2"
+							columnsL="2"
+							columnsXL="2">
+							<Label text="{i18n>detailEmployee}"/>
+							<Text text="{EmployeeName}"/>
+							<Label text="{i18n>detailLeaveType}"/>
+							<Text text="{LeaveTypeText}"/>
+							<Label text="{i18n>detailFrom}"/>
+							<Text text="{path: 'StartDate', type: 'DateType', formatOptions: { style: 'full', UTC: true }}"/>
+							<Label text="{i18n>detailTo}"/>
+							<Text text="{path: 'EndDate', type: 'DateType', formatOptions: { style: 'full', UTC: true }}"/>
+							<Label text="{i18n>detailSubmitted}"/>
+							<Text text="{path: 'CreatedAt', type: 'DateTimeType', formatOptions: { style: 'medium' }}"/>
+							<Label text="{i18n>detailReason}"/>
+							<Text text="{= ${Reason} || '–' }"/>
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+
+			<uxap:ObjectPageSection title="{i18n>sectionDecision}" titleUppercase="false">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection>
+						<form:SimpleForm editable="false" layout="ColumnLayout">
+							<Label text="{i18n>detailDecision}"/>
+							<ObjectStatus
+								text="{path: 'Status', formatter: '.formatter.statusText'}"
+								state="{path: 'Status', formatter: '.formatter.statusState'}"/>
+							<Label text="{i18n>detailManagerComment}"/>
+							<Text text="{= ${ManagerComment} || ${i18n>noComment} }"/>
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+		</uxap:sections>
+
+		<uxap:footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button id="approveButton" type="Accept" text="{i18n>approveButton}" press=".onApprove"/>
+				<Button id="rejectButton" type="Reject" text="{i18n>rejectButton}" press=".onReject"/>
+			</OverflowToolbar>
+		</uxap:footer>
+	</uxap:ObjectPageLayout>
+</mvc:View>

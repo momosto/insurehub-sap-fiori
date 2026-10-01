@@ -1,0 +1,4 @@
+/* Keep custom CSS to a minimum: theming comes from SAP Horizon. */
+html, body {
+	height: 100%;
+}

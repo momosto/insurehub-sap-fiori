@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+	xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="ZHR_LEAVE_SRV" xml:lang="en" sap:schema-version="1"
+			xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+
+			<EntityType Name="LeaveRequest" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="RequestId"/>
+				</Key>
+				<Property Name="RequestId" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Request ID" sap:creatable="false" sap:updatable="false"/>
+				<Property Name="EmployeeName" Type="Edm.String" MaxLength="80" sap:label="Employee"/>
+				<Property Name="LeaveType" Type="Edm.String" MaxLength="3" sap:label="Leave Type"/>
+				<Property Name="LeaveTypeText" Type="Edm.String" MaxLength="40" sap:label="Leave Type"/>
+				<Property Name="StartDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="From"/>
+				<Property Name="EndDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="To"/>
+				<Property Name="Days" Type="Edm.Int32" sap:label="Working Days"/>
+				<Property Name="Reason" Type="Edm.String" MaxLength="255" sap:label="Reason"/>
+				<Property Name="Status" Type="Edm.String" MaxLength="1" sap:label="Status"/>
+				<Property Name="ManagerComment" Type="Edm.String" MaxLength="255" sap:label="Manager Comment"/>
+				<Property Name="CreatedAt" Type="Edm.DateTime" Precision="0" sap:label="Submitted On"/>
+			</EntityType>
+
+			<EntityType Name="LeaveType" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Code"/>
+				</Key>
+				<Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Code"/>
+				<Property Name="Text" Type="Edm.String" MaxLength="40" sap:label="Leave Type"/>
+				<Property Name="Balance" Type="Edm.Int32" sap:label="Days Remaining"/>
+			</EntityType>
+
+			<EntityContainer Name="ZHR_LEAVE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet Name="LeaveRequests" EntityType="ZHR_LEAVE_SRV.LeaveRequest" sap:content-version="1"/>
+				<EntitySet Name="LeaveTypes" EntityType="ZHR_LEAVE_SRV.LeaveType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+
+				<FunctionImport Name="ApproveLeave" ReturnType="ZHR_LEAVE_SRV.LeaveRequest" EntitySet="LeaveRequests" m:HttpMethod="POST" sap:action-for="ZHR_LEAVE_SRV.LeaveRequest">
+					<Parameter Name="RequestId" Type="Edm.String" Mode="In" MaxLength="10"/>
+					<Parameter Name="Comment" Type="Edm.String" Mode="In" MaxLength="255" Nullable="true"/>
+				</FunctionImport>
+				<FunctionImport Name="RejectLeave" ReturnType="ZHR_LEAVE_SRV.LeaveRequest" EntitySet="LeaveRequests" m:HttpMethod="POST" sap:action-for="ZHR_LEAVE_SRV.LeaveRequest">
+					<Parameter Name="RequestId" Type="Edm.String" Mode="In" MaxLength="10"/>
+					<Parameter Name="Comment" Type="Edm.String" Mode="In" MaxLength="255"/>
+				</FunctionImport>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+	xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="ZLOAN_APPLICATION_SRV" xml:lang="en" sap:schema-version="1"
+			xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+
+			<EntityType Name="LoanApplication" sap:label="Loan Application" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ApplicationID"/>
+				</Key>
+				<Property Name="ApplicationID" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Application" sap:quickinfo="Loan application number"/>
+				<Property Name="ApplicantName" Type="Edm.String" MaxLength="80" sap:label="Applicant"/>
+				<Property Name="NationalID" Type="Edm.String" MaxLength="15" sap:label="National ID" sap:filterable="false"/>
+				<Property Name="Phone" Type="Edm.String" MaxLength="20" sap:label="Mobile Number" sap:filterable="false"/>
+				<Property Name="Employer" Type="Edm.String" MaxLength="60" sap:label="Employer"/>
+				<Property Name="Product" Type="Edm.String" MaxLength="4" sap:label="Product" sap:text="ProductName" sap:value-list="standard"/>
+				<Property Name="ProductName" Type="Edm.String" MaxLength="40" sap:label="Product Name"/>
+				<Property Name="Branch" Type="Edm.String" MaxLength="4" sap:label="Branch" sap:text="BranchName" sap:value-list="standard"/>
+				<Property Name="BranchName" Type="Edm.String" MaxLength="40" sap:label="Branch Name"/>
+				<Property Name="Purpose" Type="Edm.String" MaxLength="120" sap:label="Purpose" sap:filterable="false"/>
+				<Property Name="Amount" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Amount Requested"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:semantics="currency-code"/>
+				<Property Name="TermMonths" Type="Edm.Int32" sap:label="Term (Months)"/>
+				<Property Name="InterestRate" Type="Edm.Decimal" Precision="5" Scale="2" sap:label="Interest Rate (% p.a.)"/>
+				<Property Name="MonthlyInstalment" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Monthly Instalment"/>
+				<Property Name="MonthlyIncome" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Monthly Net Income"/>
+				<Property Name="DebtToIncome" Type="Edm.Decimal" Precision="5" Scale="1" sap:label="Debt-to-Income (%)"/>
+				<Property Name="CreditScore" Type="Edm.Int32" sap:label="Credit Score"/>
+				<Property Name="RiskBand" Type="Edm.String" MaxLength="1" sap:label="Risk Band" sap:value-list="fixed-values"/>
+				<Property Name="RiskCriticality" Type="Edm.Byte" sap:label="Risk Criticality" sap:filterable="false"/>
+				<Property Name="Status" Type="Edm.String" MaxLength="3" sap:label="Status" sap:text="StatusText" sap:value-list="fixed-values"/>
+				<Property Name="StatusText" Type="Edm.String" MaxLength="30" sap:label="Status"/>
+				<Property Name="StatusCriticality" Type="Edm.Byte" sap:label="Status Criticality" sap:filterable="false"/>
+				<Property Name="DecisionComment" Type="Edm.String" MaxLength="255" sap:label="Decision Comment" sap:filterable="false"/>
+				<Property Name="LoanOfficer" Type="Edm.String" MaxLength="60" sap:label="Loan Officer"/>
+				<Property Name="SubmittedOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Submitted On"/>
+				<Property Name="IsDecidable" Type="Edm.Boolean" sap:label="Can Be Decided" sap:filterable="false"/>
+				<NavigationProperty Name="to_Instalments" Relationship="ZLOAN_APPLICATION_SRV.assoc_Application_Instalments" FromRole="FromRole_Application" ToRole="ToRole_Instalments"/>
+			</EntityType>
+
+			<EntityType Name="Instalment" sap:label="Repayment Instalment" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ApplicationID"/>
+					<PropertyRef Name="InstalmentNo"/>
+				</Key>
+				<Property Name="ApplicationID" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Application"/>
+				<Property Name="InstalmentNo" Type="Edm.Int32" Nullable="false" sap:label="Instalment"/>
+				<Property Name="DueDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Due Date"/>
+				<Property Name="Principal" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Principal"/>
+				<Property Name="Interest" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Interest"/>
+				<Property Name="Total" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Instalment"/>
+				<Property Name="Balance" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Closing Balance"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:semantics="currency-code"/>
+			</EntityType>
+
+			<EntityType Name="Product" sap:label="Loan Product" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Product"/>
+				</Key>
+				<Property Name="Product" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="Product"/>
+				<Property Name="ProductName" Type="Edm.String" MaxLength="40" sap:label="Product Name"/>
+				<Property Name="InterestRate" Type="Edm.Decimal" Precision="5" Scale="2" sap:label="Rate (% p.a.)"/>
+				<Property Name="MaxTermMonths" Type="Edm.Int32" sap:label="Max Term (Months)"/>
+			</EntityType>
+
+			<EntityType Name="Branch" sap:label="Branch" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Branch"/>
+				</Key>
+				<Property Name="Branch" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="Branch"/>
+				<Property Name="BranchName" Type="Edm.String" MaxLength="40" sap:label="Branch Name"/>
+				<Property Name="City" Type="Edm.String" MaxLength="40" sap:label="City"/>
+			</EntityType>
+
+			<EntityType Name="StatusVH" sap:label="Application Status" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Status"/>
+				</Key>
+				<Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Status" sap:text="StatusText"/>
+				<Property Name="StatusText" Type="Edm.String" MaxLength="30" sap:label="Status"/>
+			</EntityType>
+
+			<EntityType Name="RiskBandVH" sap:label="Risk Band" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="RiskBand"/>
+				</Key>
+				<Property Name="RiskBand" Type="Edm.String" Nullable="false" MaxLength="1" sap:label="Risk Band" sap:text="Description"/>
+				<Property Name="Description" Type="Edm.String" MaxLength="30" sap:label="Description"/>
+			</EntityType>
+
+			<Association Name="assoc_Application_Instalments" sap:content-version="1">
+				<End Type="ZLOAN_APPLICATION_SRV.LoanApplication" Multiplicity="1" Role="FromRole_Application"/>
+				<End Type="ZLOAN_APPLICATION_SRV.Instalment" Multiplicity="*" Role="ToRole_Instalments"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Application">
+						<PropertyRef Name="ApplicationID"/>
+					</Principal>
+					<Dependent Role="ToRole_Instalments">
+						<PropertyRef Name="ApplicationID"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+
+			<EntityContainer Name="ZLOAN_APPLICATION_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet Name="LoanApplications" EntityType="ZLOAN_APPLICATION_SRV.LoanApplication" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+				<EntitySet Name="Instalments" EntityType="ZLOAN_APPLICATION_SRV.Instalment" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="Products" EntityType="ZLOAN_APPLICATION_SRV.Product" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="Branches" EntityType="ZLOAN_APPLICATION_SRV.Branch" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="StatusVH" EntityType="ZLOAN_APPLICATION_SRV.StatusVH" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="RiskBandVH" EntityType="ZLOAN_APPLICATION_SRV.RiskBandVH" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+
+				<AssociationSet Name="assoc_Application_Instalments_AssocSet" Association="ZLOAN_APPLICATION_SRV.assoc_Application_Instalments" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+					<End EntitySet="LoanApplications" Role="FromRole_Application"/>
+					<End EntitySet="Instalments" Role="ToRole_Instalments"/>
+				</AssociationSet>
+
+				<FunctionImport Name="ApproveApplication" ReturnType="ZLOAN_APPLICATION_SRV.LoanApplication" EntitySet="LoanApplications" m:HttpMethod="POST" sap:label="Approve" sap:action-for="ZLOAN_APPLICATION_SRV.LoanApplication" sap:applicable-path="IsDecidable">
+					<Parameter Name="ApplicationID" Type="Edm.String" Mode="In" MaxLength="10"/>
+					<Parameter Name="Comment" Type="Edm.String" Mode="In" MaxLength="255" Nullable="true" sap:label="Comment"/>
+				</FunctionImport>
+				<FunctionImport Name="RejectApplication" ReturnType="ZLOAN_APPLICATION_SRV.LoanApplication" EntitySet="LoanApplications" m:HttpMethod="POST" sap:label="Reject" sap:action-for="ZLOAN_APPLICATION_SRV.LoanApplication" sap:applicable-path="IsDecidable">
+					<Parameter Name="ApplicationID" Type="Edm.String" Mode="In" MaxLength="10"/>
+					<Parameter Name="Comment" Type="Edm.String" Mode="In" MaxLength="255" Nullable="false" sap:label="Reason for Rejection"/>
+				</FunctionImport>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

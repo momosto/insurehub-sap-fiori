@@ -1,0 +1,11 @@
+<mvc:View
+	controllerName="insurehub.hr.leaverequests.controller.BaseController"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	<Page showHeader="false">
+		<IllustratedMessage
+			illustrationType="sapIllus-PageNotFound"
+			title="{i18n>notFoundTitle}"
+			description="{i18n>notFoundText}"/>
+	</Page>
+</mvc:View>

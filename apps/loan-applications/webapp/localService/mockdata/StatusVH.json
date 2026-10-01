@@ -1,0 +1,22 @@
+[
+  {
+    "Status": "SUB",
+    "StatusText": "Submitted"
+  },
+  {
+    "Status": "REV",
+    "StatusText": "Under Review"
+  },
+  {
+    "Status": "APP",
+    "StatusText": "Approved"
+  },
+  {
+    "Status": "REJ",
+    "StatusText": "Rejected"
+  },
+  {
+    "Status": "DIS",
+    "StatusText": "Disbursed"
+  }
+]

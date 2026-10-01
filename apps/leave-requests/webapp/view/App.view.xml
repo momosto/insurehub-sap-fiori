@@ -1,0 +1,14 @@
+<mvc:View
+	controllerName="insurehub.hr.leaverequests.controller.App"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	displayBlock="true"
+	height="100%">
+	<App id="app" busy="{appView>/busy}" busyIndicatorDelay="0">
+		<f:FlexibleColumnLayout
+			id="layout"
+			layout="{appView>/layout}"
+			backgroundDesign="Translucent"/>
+	</App>
+</mvc:View>

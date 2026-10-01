@@ -1,0 +1,31 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Dialog
+		id="decisionDialog"
+		title="{decision>/title}"
+		state="{= ${decision>/approve} ? 'Success' : 'Error' }"
+		type="Message"
+		contentWidth="24rem">
+		<content>
+			<Label text="{i18n>decisionComment}" labelFor="decisionComment" required="{= !${decision>/approve} }"/>
+			<TextArea
+				id="decisionComment"
+				value="{decision>/comment}"
+				valueLiveUpdate="true"
+				width="100%"
+				rows="4"
+				maxLength="255"/>
+		</content>
+		<beginButton>
+			<Button
+				type="{= ${decision>/approve} ? 'Accept' : 'Reject' }"
+				text="{= ${decision>/approve} ? ${i18n>approveButton} : ${i18n>rejectButton} }"
+				enabled="{= ${decision>/approve} || !!${decision>/comment} }"
+				press=".onDecisionConfirm"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>cancelButton}" press=".onDecisionCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

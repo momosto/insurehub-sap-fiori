@@ -1,0 +1,27 @@
+[
+  {
+    "Code": "ANN",
+    "Text": "Annual Leave",
+    "Balance": 18
+  },
+  {
+    "Code": "SIC",
+    "Text": "Sick Leave",
+    "Balance": 10
+  },
+  {
+    "Code": "STU",
+    "Text": "Study Leave",
+    "Balance": 5
+  },
+  {
+    "Code": "FAM",
+    "Text": "Compassionate Leave",
+    "Balance": 3
+  },
+  {
+    "Code": "MAT",
+    "Text": "Maternity Leave",
+    "Balance": 98
+  }
+]

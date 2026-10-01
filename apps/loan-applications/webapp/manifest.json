@@ -1,0 +1,139 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "insurehub.lending.loanapplications",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": { "version": "1.0.0" },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZLOAN_APPLICATION_SRV/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml",
+          "annotations": ["localAnnotations"]
+        }
+      },
+      "localAnnotations": {
+        "uri": "annotations/annotations.xml",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "annotations/annotations.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "manage": {
+          "semanticObject": "LoanApplication",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "sap-icon://loan" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.ui.comp": {},
+        "sap.uxap": {},
+        "sap.ui.generic.app": {},
+        "sap.suite.ui.generic.template": {}
+      }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "insurehub.lending.loanapplications.i18n.i18n",
+          "supportedLocales": [""],
+          "fallbackLocale": ""
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "refreshAfterChange": false
+        }
+      }
+    }
+  },
+  "sap.ui.generic.app": {
+    "_version": "1.3.0",
+    "settings": {
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "considerAnalyticalParameters": false,
+      "showDraftToggle": false,
+      "flexibleColumnLayout": {
+        "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+        "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+      }
+    },
+    "pages": {
+      "ListReport|LoanApplications": {
+        "entitySet": "LoanApplications",
+        "component": {
+          "name": "sap.suite.ui.generic.template.ListReport",
+          "list": true,
+          "settings": {
+            "condensedTableLayout": true,
+            "dataLoadSettings": { "loadDataOnAppLaunch": "always" },
+            "smartVariantManagement": true,
+            "enableTableFilterInPageVariant": true,
+            "tableSettings": {
+              "type": "ResponsiveTable",
+              "multiSelect": false,
+              "selectAll": false
+            },
+            "quickVariantSelectionX": {
+              "showCounts": true,
+              "variants": {
+                "0": { "key": "all", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#All" },
+                "1": { "key": "open", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#Open" },
+                "2": { "key": "highRisk", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#HighRisk" }
+              }
+            }
+          }
+        },
+        "pages": {
+          "ObjectPage|LoanApplications": {
+            "entitySet": "LoanApplications",
+            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+            "component": {
+              "name": "sap.suite.ui.generic.template.ObjectPage",
+              "settings": {
+                "sections": {
+                  "to_Instalments::com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": { "type": "ResponsiveTable" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

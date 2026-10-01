@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Local UI annotations for the Loan Applications app.
+	On a real S/4HANA system most of these would live in a CDS metadata extension
+	(@UI.lineItem, @UI.facet, ...) and reach the app through the service's
+	annotation model. Keeping them here makes the app run without a backend.
+-->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+	<edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+		<edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+		<edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+		<edmx:Include Namespace="Org.OData.Core.V1" Alias="Core"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/sap/ZLOAN_APPLICATION_SRV/$metadata">
+		<edmx:Include Namespace="ZLOAN_APPLICATION_SRV" Alias="SRV"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema Namespace="insurehub.lending.loanapplications.annotations" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+			<!-- ========================================================= -->
+			<!-- Loan application: list report                              -->
+			<!-- ========================================================= -->
+			<Annotations Target="SRV.LoanApplication">
+				<Annotation Term="UI.HeaderInfo">
+					<Record Type="UI.HeaderInfoType">
+						<PropertyValue Property="TypeName" String="Loan Application"/>
+						<PropertyValue Property="TypeNamePlural" String="Loan Applications"/>
+						<PropertyValue Property="TypeImageUrl" String="sap-icon://loan"/>
+						<PropertyValue Property="Title">
+							<Record Type="UI.DataField">
+								<PropertyValue Property="Value" Path="ApplicantName"/>
+							</Record>
+						</PropertyValue>
+						<PropertyValue Property="Description">
+							<Record Type="UI.DataField">
+								<PropertyValue Property="Value" Path="ApplicationID"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.SelectionFields">
+					<Collection>
+						<PropertyPath>Status</PropertyPath>
+						<PropertyPath>Product</PropertyPath>
+						<PropertyPath>Branch</PropertyPath>
+						<PropertyPath>RiskBand</PropertyPath>
+						<PropertyPath>SubmittedOn</PropertyPath>
+					</Collection>
+				</Annotation>
+
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Label" String="Approve"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
+							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
+						</Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Label" String="Reject"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
+							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ApplicationID"/>
+							<Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ApplicantName"/>
+							<Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Product"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Branch"/>
+							<Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Low"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Amount"/>
+							<Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="TermMonths"/>
+						</Record>
+						<Record Type="UI.DataFieldForAnnotation">
+							<PropertyValue Property="Label" String="Credit Score"/>
+							<PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#CreditScore"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="RiskBand"/>
+							<PropertyValue Property="Criticality" Path="RiskCriticality"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Status"/>
+							<PropertyValue Property="Criticality" Path="StatusCriticality"/>
+							<Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="SubmittedOn"/>
+						</Record>
+					</Collection>
+				</Annotation>
+
+				<Annotation Term="UI.PresentationVariant">
+					<Record Type="UI.PresentationVariantType">
+						<PropertyValue Property="SortOrder">
+							<Collection>
+								<Record Type="Common.SortOrderType">
+									<PropertyValue Property="Property" PropertyPath="SubmittedOn"/>
+									<PropertyValue Property="Descending" Bool="true"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="Visualizations">
+							<Collection>
+								<AnnotationPath>@UI.LineItem</AnnotationPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<!-- ===================================================== -->
+				<!-- Table tabs (quickVariantSelectionX in the manifest)   -->
+				<!-- ===================================================== -->
+				<Annotation Term="UI.SelectionVariant" Qualifier="All">
+					<Record Type="UI.SelectionVariantType">
+						<PropertyValue Property="Text" String="All"/>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.SelectionVariant" Qualifier="Open">
+					<Record Type="UI.SelectionVariantType">
+						<PropertyValue Property="Text" String="Awaiting Decision"/>
+						<PropertyValue Property="SelectOptions">
+							<Collection>
+								<Record Type="UI.SelectOptionType">
+									<PropertyValue Property="PropertyName" PropertyPath="Status"/>
+									<PropertyValue Property="Ranges">
+										<Collection>
+											<Record Type="UI.SelectionRangeType">
+												<PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+												<PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+												<PropertyValue Property="Low" String="SUB"/>
+											</Record>
+											<Record Type="UI.SelectionRangeType">
+												<PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+												<PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+												<PropertyValue Property="Low" String="REV"/>
+											</Record>
+										</Collection>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.SelectionVariant" Qualifier="HighRisk">
+					<Record Type="UI.SelectionVariantType">
+						<PropertyValue Property="Text" String="High Risk (C/D)"/>
+						<PropertyValue Property="SelectOptions">
+							<Collection>
+								<Record Type="UI.SelectOptionType">
+									<PropertyValue Property="PropertyName" PropertyPath="RiskBand"/>
+									<PropertyValue Property="Ranges">
+										<Collection>
+											<Record Type="UI.SelectionRangeType">
+												<PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+												<PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/BT"/>
+												<PropertyValue Property="Low" String="C"/>
+												<PropertyValue Property="High" String="D"/>
+											</Record>
+										</Collection>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<!-- ===================================================== -->
+				<!-- Data points (used in the table and the page header)   -->
+				<!-- ===================================================== -->
+				<Annotation Term="UI.DataPoint" Qualifier="CreditScore">
+					<Record Type="UI.DataPointType">
+						<PropertyValue Property="Title" String="Credit Score"/>
+						<PropertyValue Property="Value" Path="CreditScore"/>
+						<PropertyValue Property="TargetValue" Int="850"/>
+						<PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Progress"/>
+						<PropertyValue Property="Criticality" Path="RiskCriticality"/>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.DataPoint" Qualifier="Amount">
+					<Record Type="UI.DataPointType">
+						<PropertyValue Property="Title" String="Amount Requested"/>
+						<PropertyValue Property="Value" Path="Amount"/>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.DataPoint" Qualifier="Instalment">
+					<Record Type="UI.DataPointType">
+						<PropertyValue Property="Title" String="Monthly Instalment"/>
+						<PropertyValue Property="Value" Path="MonthlyInstalment"/>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.DataPoint" Qualifier="DebtToIncome">
+					<Record Type="UI.DataPointType">
+						<PropertyValue Property="Title" String="Debt-to-Income"/>
+						<PropertyValue Property="Value" Path="DebtToIncome"/>
+						<PropertyValue Property="TargetValue" Int="100"/>
+						<PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Progress"/>
+						<PropertyValue Property="CriticalityCalculation">
+							<Record Type="UI.CriticalityCalculationType">
+								<PropertyValue Property="ImprovementDirection" EnumMember="UI.ImprovementDirectionType/Minimize"/>
+								<PropertyValue Property="ToleranceRangeHighValue" Int="35"/>
+								<PropertyValue Property="DeviationRangeHighValue" Int="50"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<!-- ===================================================== -->
+				<!-- Object page                                           -->
+				<!-- ===================================================== -->
+				<Annotation Term="UI.HeaderFacets">
+					<Collection>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#HeaderStatus"/>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Amount"/>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Instalment"/>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#CreditScore"/>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#DebtToIncome"/>
+						</Record>
+					</Collection>
+				</Annotation>
+
+				<Annotation Term="UI.FieldGroup" Qualifier="HeaderStatus">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="Status"/>
+									<PropertyValue Property="Criticality" Path="StatusCriticality"/>
+								</Record>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="RiskBand"/>
+									<PropertyValue Property="Criticality" Path="RiskCriticality"/>
+								</Record>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="LoanOfficer"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.Identification">
+					<Collection>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Label" String="Approve"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
+							<PropertyValue Property="Determining" Bool="true"/>
+						</Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Label" String="Reject"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
+							<PropertyValue Property="Determining" Bool="true"/>
+						</Record>
+					</Collection>
+				</Annotation>
+
+				<Annotation Term="UI.Facets">
+					<Collection>
+						<Record Type="UI.CollectionFacet">
+							<PropertyValue Property="ID" String="ApplicantFacet"/>
+							<PropertyValue Property="Label" String="Applicant"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="ID" String="ApplicantDetails"/>
+										<PropertyValue Property="Label" String="Personal Details"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Applicant"/>
+									</Record>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="ID" String="Affordability"/>
+										<PropertyValue Property="Label" String="Affordability"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Affordability"/>
+									</Record>
+								</Collection>
+							</PropertyValue>
+						</Record>
+						<Record Type="UI.CollectionFacet">
+							<PropertyValue Property="ID" String="LoanFacet"/>
+							<PropertyValue Property="Label" String="Loan"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="ID" String="LoanTerms"/>
+										<PropertyValue Property="Label" String="Terms"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Loan"/>
+									</Record>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="ID" String="Decision"/>
+										<PropertyValue Property="Label" String="Decision"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Decision"/>
+									</Record>
+								</Collection>
+							</PropertyValue>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="ID" String="Schedule"/>
+							<PropertyValue Property="Label" String="Repayment Schedule"/>
+							<PropertyValue Property="Target" AnnotationPath="to_Instalments/@UI.LineItem"/>
+						</Record>
+					</Collection>
+				</Annotation>
+
+				<Annotation Term="UI.FieldGroup" Qualifier="Applicant">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="ApplicantName"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="NationalID"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Phone"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Employer"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Branch"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.FieldGroup" Qualifier="Affordability">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="MonthlyIncome"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="MonthlyInstalment"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DebtToIncome"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreditScore"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.FieldGroup" Qualifier="Loan">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Product"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Purpose"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Amount"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="TermMonths"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InterestRate"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="SubmittedOn"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+				<Annotation Term="UI.FieldGroup" Qualifier="Decision">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="Status"/>
+									<PropertyValue Property="Criticality" Path="StatusCriticality"/>
+								</Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DecisionComment"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="LoanOfficer"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+
+			<!-- ========================================================= -->
+			<!-- Texts and value helps                                      -->
+			<!-- ========================================================= -->
+			<Annotations Target="SRV.LoanApplication/Product">
+				<Annotation Term="Common.Text" Path="ProductName">
+					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+				</Annotation>
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="Label" String="Loan Products"/>
+						<PropertyValue Property="CollectionPath" String="Products"/>
+						<PropertyValue Property="SearchSupported" Bool="false"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Product"/>
+									<PropertyValue Property="ValueListProperty" String="Product"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="ProductName"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="InterestRate"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="MaxTermMonths"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.LoanApplication/Branch">
+				<Annotation Term="Common.Text" Path="BranchName">
+					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+				</Annotation>
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="Label" String="Branches"/>
+						<PropertyValue Property="CollectionPath" String="Branches"/>
+						<PropertyValue Property="SearchSupported" Bool="false"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Branch"/>
+									<PropertyValue Property="ValueListProperty" String="Branch"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="BranchName"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="City"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.LoanApplication/Status">
+				<Annotation Term="Common.Text" Path="StatusText">
+					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+				</Annotation>
+				<Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="CollectionPath" String="StatusVH"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Status"/>
+									<PropertyValue Property="ValueListProperty" String="Status"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="StatusText"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.StatusVH/Status">
+				<Annotation Term="Common.Text" Path="StatusText">
+					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.LoanApplication/RiskBand">
+				<Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="CollectionPath" String="RiskBandVH"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="RiskBand"/>
+									<PropertyValue Property="ValueListProperty" String="RiskBand"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="Description"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.RiskBandVH/RiskBand">
+				<Annotation Term="Common.Text" Path="Description">
+					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/>
+				</Annotation>
+			</Annotations>
+
+			<Annotations Target="SRV.LoanApplication/IsDecidable">
+				<Annotation Term="UI.Hidden" Bool="true"/>
+			</Annotations>
+			<Annotations Target="SRV.LoanApplication/RiskCriticality">
+				<Annotation Term="UI.Hidden" Bool="true"/>
+			</Annotations>
+			<Annotations Target="SRV.LoanApplication/StatusCriticality">
+				<Annotation Term="UI.Hidden" Bool="true"/>
+			</Annotations>
+
+			<!-- ========================================================= -->
+			<!-- Instalments (repayment schedule table and sub-page)        -->
+			<!-- ========================================================= -->
+			<Annotations Target="SRV.Instalment">
+				<Annotation Term="UI.HeaderInfo">
+					<Record Type="UI.HeaderInfoType">
+						<PropertyValue Property="TypeName" String="Instalment"/>
+						<PropertyValue Property="TypeNamePlural" String="Instalments"/>
+						<PropertyValue Property="Title">
+							<Record Type="UI.DataField">
+								<PropertyValue Property="Value" Path="InstalmentNo"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InstalmentNo"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DueDate"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Principal"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Interest"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Total"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Balance"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.PresentationVariant">
+					<Record Type="UI.PresentationVariantType">
+						<PropertyValue Property="SortOrder">
+							<Collection>
+								<Record Type="Common.SortOrderType">
+									<PropertyValue Property="Property" PropertyPath="InstalmentNo"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

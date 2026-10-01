@@ -1,0 +1,32 @@
+[
+  {
+    "Branch": "HRE1",
+    "BranchName": "Harare CBD",
+    "City": "Harare"
+  },
+  {
+    "Branch": "HRE2",
+    "BranchName": "Borrowdale",
+    "City": "Harare"
+  },
+  {
+    "Branch": "BYO1",
+    "BranchName": "Bulawayo Main",
+    "City": "Bulawayo"
+  },
+  {
+    "Branch": "MUT1",
+    "BranchName": "Mutare",
+    "City": "Mutare"
+  },
+  {
+    "Branch": "GWE1",
+    "BranchName": "Gweru",
+    "City": "Gweru"
+  },
+  {
+    "Branch": "MSV1",
+    "BranchName": "Masvingo",
+    "City": "Masvingo"
+  }
+]

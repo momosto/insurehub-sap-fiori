@@ -1,0 +1,108 @@
+<mvc:View
+	controllerName="insurehub.hr.leaverequests.controller.List"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	core:require="{ DateType: 'sap/ui/model/type/Date' }">
+	<f:DynamicPage id="listPage" toggleHeaderOnTitleClick="false" showFooter="false">
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:heading>
+					<Title id="listTitle" text="{listView>/title}" level="H2"/>
+				</f:heading>
+				<f:actions>
+					<Button
+						id="createButton"
+						text="{i18n>createButton}"
+						type="Emphasized"
+						icon="sap-icon://add"
+						press=".onCreate"/>
+				</f:actions>
+			</f:DynamicPageTitle>
+		</f:title>
+
+		<f:header>
+			<f:DynamicPageHeader pinnable="false">
+				<IconTabBar
+					id="statusTabs"
+					selectedKey="{listView>/status}"
+					select=".onStatusSelect"
+					expandable="false"
+					headerBackgroundDesign="Transparent"
+					applyContentPadding="false">
+					<items>
+						<IconTabFilter key="ALL" showAll="true" count="{listView>/counts/ALL}" text="{i18n>tabAll}"/>
+						<IconTabSeparator/>
+						<IconTabFilter key="P" icon="sap-icon://pending" iconColor="Critical" count="{listView>/counts/P}" text="{i18n>statusP}"/>
+						<IconTabFilter key="A" icon="sap-icon://accept" iconColor="Positive" count="{listView>/counts/A}" text="{i18n>statusA}"/>
+						<IconTabFilter key="R" icon="sap-icon://decline" iconColor="Negative" count="{listView>/counts/R}" text="{i18n>statusR}"/>
+					</items>
+				</IconTabBar>
+			</f:DynamicPageHeader>
+		</f:header>
+
+		<f:content>
+			<List
+				id="requestList"
+				width="auto"
+				class="sapFDynamicPageAlignContent"
+				items="{
+					path: '/LeaveRequests',
+					sorter: { path: 'StartDate', descending: true }
+				}"
+				busyIndicatorDelay="0"
+				growing="true"
+				growingThreshold="20"
+				growingScrollToLoad="true"
+				noDataText="{i18n>noData}"
+				mode="SingleSelectMaster"
+				selectionChange=".onSelectionChange"
+				updateFinished=".onUpdateFinished">
+				<headerToolbar>
+					<OverflowToolbar>
+						<SearchField
+							id="searchField"
+							placeholder="{i18n>searchPlaceholder}"
+							search=".onSearch"
+							width="100%">
+							<layoutData>
+								<OverflowToolbarLayoutData minWidth="12rem" maxWidth="100%" shrinkable="true" priority="NeverOverflow"/>
+							</layoutData>
+						</SearchField>
+						<Button
+							id="sortButton"
+							icon="sap-icon://sort"
+							tooltip="{i18n>sortTooltip}"
+							press=".onSort"/>
+					</OverflowToolbar>
+				</headerToolbar>
+				<items>
+					<ObjectListItem
+						type="Navigation"
+						press=".onItemPress"
+						title="{EmployeeName}"
+						number="{Days}"
+						numberUnit="{i18n>days}"
+						icon="{path: 'Status', formatter: '.formatter.statusIcon'}">
+						<firstStatus>
+							<ObjectStatus
+								text="{path: 'Status', formatter: '.formatter.statusText'}"
+								state="{path: 'Status', formatter: '.formatter.statusState'}"/>
+						</firstStatus>
+						<attributes>
+							<ObjectAttribute text="{LeaveTypeText}"/>
+							<ObjectAttribute text="{
+								parts: [
+									{ path: 'StartDate', type: 'DateType', formatOptions: { style: 'medium', UTC: true } },
+									{ path: 'EndDate', type: 'DateType', formatOptions: { style: 'medium', UTC: true } }
+								],
+								formatter: '.formatPeriod'
+							}"/>
+						</attributes>
+					</ObjectListItem>
+				</items>
+			</List>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>

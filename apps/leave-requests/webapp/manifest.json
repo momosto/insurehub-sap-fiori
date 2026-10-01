@@ -1,0 +1,120 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "insurehub.hr.leaverequests",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": { "version": "1.0.0" },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZHR_LEAVE_SRV/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "manage": {
+          "semanticObject": "LeaveRequest",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "sap-icon://general-leave-request" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "rootView": {
+      "viewName": "insurehub.hr.leaverequests.view.App",
+      "type": "XML",
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.f": {},
+        "sap.uxap": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "insurehub.hr.leaverequests.i18n.i18n",
+          "supportedLocales": [""],
+          "fallbackLocale": ""
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "useBatch": true
+        }
+      }
+    },
+    "resources": {
+      "css": [{ "uri": "css/style.css" }]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.f.routing.Router",
+        "type": "View",
+        "viewType": "XML",
+        "path": "insurehub.hr.leaverequests.view",
+        "controlId": "layout",
+        "controlAggregation": "beginColumnPages",
+        "bypassed": { "target": "notFound" },
+        "async": true
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "list",
+          "target": ["list"]
+        },
+        {
+          "pattern": "requests/{requestId}",
+          "name": "detail",
+          "target": ["list", "detail"]
+        }
+      ],
+      "targets": {
+        "list": {
+          "name": "List",
+          "id": "list",
+          "level": 1,
+          "controlAggregation": "beginColumnPages"
+        },
+        "detail": {
+          "name": "Detail",
+          "id": "detail",
+          "level": 2,
+          "controlAggregation": "midColumnPages"
+        },
+        "notFound": {
+          "name": "NotFound",
+          "id": "notFound",
+          "controlAggregation": "midColumnPages"
+        }
+      }
+    }
+  }
+}

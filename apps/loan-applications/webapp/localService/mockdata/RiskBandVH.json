@@ -1,0 +1,18 @@
+[
+  {
+    "RiskBand": "A",
+    "Description": "Low risk"
+  },
+  {
+    "RiskBand": "B",
+    "Description": "Moderate risk"
+  },
+  {
+    "RiskBand": "C",
+    "Description": "Elevated risk"
+  },
+  {
+    "RiskBand": "D",
+    "Description": "High risk"
+  }
+]

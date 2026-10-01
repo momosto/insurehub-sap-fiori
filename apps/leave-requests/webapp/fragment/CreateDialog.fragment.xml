@@ -1,0 +1,59 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form">
+	<Dialog
+		id="createDialog"
+		title="{i18n>createTitle}"
+		contentWidth="32rem"
+		resizable="true"
+		draggable="true"
+		afterClose=".onCreateDialogClosed">
+		<content>
+			<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanM="4" labelSpanL="4">
+				<Label text="{i18n>createLeaveType}" required="true" labelFor="leaveTypeSelect"/>
+				<Select
+					id="leaveTypeSelect"
+					forceSelection="true"
+					selectedKey="{create>/LeaveType}"
+					change=".onCreateInputChange"
+					items="{ path: '/LeaveTypes', sorter: { path: 'Text' } }">
+					<core:Item key="{Code}" text="{parts: [{path: 'i18n>createBalance'}, {path: 'Text'}, {path: 'Balance'}], formatter: '.formatMessage'}"/>
+				</Select>
+
+				<Label text="{i18n>createPeriod}" required="true" labelFor="periodPicker"/>
+				<DateRangeSelection
+					id="periodPicker"
+					dateValue="{create>/StartDate}"
+					secondDateValue="{create>/EndDate}"
+					minDate="{create>/minDate}"
+					valueState="{create>/periodState}"
+					valueStateText="{create>/periodStateText}"
+					change=".onCreateInputChange"/>
+
+				<Label text="{i18n>createDays}"/>
+				<ObjectNumber number="{create>/Days}" unit="{i18n>days}" emphasized="true"/>
+
+				<Label text="{i18n>createReason}" labelFor="reasonInput"/>
+				<TextArea
+					id="reasonInput"
+					value="{create>/Reason}"
+					placeholder="{i18n>createReasonPlaceholder}"
+					maxLength="255"
+					showExceededText="true"
+					rows="3"
+					growing="true"/>
+			</form:SimpleForm>
+		</content>
+		<beginButton>
+			<Button
+				text="{i18n>submitButton}"
+				type="Emphasized"
+				enabled="{create>/valid}"
+				press=".onCreateSubmit"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>cancelButton}" press=".onCreateCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>
