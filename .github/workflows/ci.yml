@@ -37,6 +37,8 @@ jobs:
       - run: npm ci
       - name: QUnit and OPA5 (headless Chrome, UI5 from the SAP CDN)
         run: npm test
+      - name: OPA5 again on the built site (Component-preload bundles, as published)
+        run: npm run build && npm test -- --dist integration
       - name: Test report
         if: always()
         uses: actions/upload-artifact@v4
