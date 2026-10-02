@@ -18,10 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      # Ubuntu 24.04 blocks the unprivileged user namespaces Chrome's sandbox needs
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Build and serve the site exactly as GitHub Pages would
         run: |
           npm run build
           npx http-server dist -p 8080 -c-1 --silent &
           sleep 3
       - name: Measure
-        run: node tools/measure-load.cjs http://localhost:8080 "${{ inputs.runs }}" | tee -a "$GITHUB_STEP_SUMMARY"
+        shell: bash
+        run: set -o pipefail; node tools/measure-load.cjs http://localhost:8080 "${{ inputs.runs }}" | tee -a "$GITHUB_STEP_SUMMARY"
