@@ -40,7 +40,8 @@ Status: ✅ built and tested · 🟡 built, tested manually or partly · ⏳ not
 | Backend contract | metadata per app; Gateway URL and error format | ✅ |
 | Privacy | fictional data; fake ID/phone ranges; PII not filterable | ✅ |
 | Quality gates | CI: lint, static checks, 40 tests before deploy | ✅ |
-| Hosting | GitHub Pages from `main` | ✅ once the first CI run on `main` completes |
+| Hosting | GitHub Pages from `main` | ✅ |
+| Performance | time to data measured per release on fast and mobile profiles ([docs/perf](perf/2026-10-02-load-times.md)) | ✅ |
 
 ## 3. Defects found during testing
 
@@ -54,6 +55,6 @@ Status: ✅ built and tested · 🟡 built, tested manually or partly · ⏳ not
 
 ## 4. Deviations and backlog
 
-- No UI5 Tooling build yet (served from source with the CDN). Next: `ui5.yaml`, `Component-preload.js`.
+- UI5 Tooling build added in 0.1.1 (`Component-preload.js` per app); UI5 itself still comes from the CDN.
 - Loan Applications has no unit tests: the app has no custom code (pure Fiori elements); its rules are tested through OPA.
 - OData V4 / RAP variant of Loan Applications: backlog.

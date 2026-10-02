@@ -12,7 +12,8 @@
 | 6. Launchpad sandbox | one group, three tiles, intent navigation | ✅ |
 | 7. CI/CD | lint, checks, tests, GitHub Pages deploy | ✅ |
 | 8. Documentation | concept, requirements, architecture, security, tests, operations, ADRs, test cases | ✅ |
-| Next | UI5 Tooling build (`ui5.yaml`, Component-preload), OPA for leave creation on phone layout, visual regression, OData V4 / RAP variant of Loan Applications | backlog |
+| 9. Load time | UI5 Tooling build, background library warm-up, measured on fast and mobile profiles | ✅ 0.1.1 |
+| Next | OPA for leave creation on phone layout, visual regression, OData V4 / RAP variant of Loan Applications | backlog |
 
 ## Definition of done
 

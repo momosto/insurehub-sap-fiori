@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1 (2026-10-02)
+
+### Performance
+- Apps are built with UI5 Tooling: each app's modules ship as one `Component-preload.js`.
+- The launchpad loads the Fiori elements libraries in the background once it has rendered (on the home page or the loan app only).
+- Result on a simulated 4G connection: Loan Applications from the tile 8.8 s → 3.3 s; Leave Requests 12.1 s → 10.9 s; Claims Insights 13.2 s → 12.0 s ([docs/perf](docs/perf/2026-10-02-load-times.md)).
+
+### Added
+- `tools/measure-load.cjs` and an on-demand `perf` workflow (fast and mobile profiles).
+- CI also runs the OPA5 journeys against the built site.
+
 ## 0.1.0 (2026-10-02)
 
 ### Added

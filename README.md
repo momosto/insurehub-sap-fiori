@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/momosto/insurehub-sap-fiori/actions/workflows/ci.yml/badge.svg)](https://github.com/momosto/insurehub-sap-fiori/actions/workflows/ci.yml)
 
-**Live demo:** https://momosto.github.io/insurehub-sap-fiori/ (first load of Loan Applications takes about 20 s: UI5 libraries come from the SAP CDN without preload bundles yet) · **Status:** v0.1.0, three apps built and tested
+**Live demo:** https://momosto.github.io/insurehub-sap-fiori/ · **Status:** v0.1.1, three apps built, tested and load-time tuned ([measurements](docs/perf/2026-10-02-load-times.md))
 **Stack:** SAPUI5 1.148 (Horizon) · OData V2 (SAP Gateway contracts) · Fiori elements V2 (List Report / Object Page) · freestyle SAPUI5 (Flexible Column Layout, VizFrame) · Fiori launchpad sandbox · MockServer · QUnit · OPA5 · ui5-test-runner · ESLint · GitHub Actions + Pages
 
 Three SAP Fiori apps for the fictional **InsureHub Group**, an insurer with a microfinance arm (LendHub). They sit on one Fiori launchpad. Each app talks to an OData V2 service shaped exactly like an SAP Gateway service, simulated in the browser by MockServer, so everything runs without an SAP system.
@@ -26,13 +26,15 @@ npm ci
 npm start                          # http://localhost:8080/launchpad/index.html
 npm run lint && npm run check      # ESLint + consistency checks (manifests, i18n, metadata, annotations, mock data)
 npm test                           # 40 QUnit + OPA5 tests in headless Chrome; report in report/
-npm run build                      # static site in dist/ (what GitHub Pages serves)
+npm run build                      # static site in dist/ (UI5 Tooling bundles; what GitHub Pages serves)
+npm test -- --dist integration     # OPA5 journeys against the built site
 ```
 
 ## Quality
 
 - **40 automated UI tests**: 23 unit tests (working days, UTC dates, KPI maths with a hand-worked example, thresholds) and 17 OPA5 journeys. The Loan Applications journeys drive the real launchpad, because Fiori elements V2 needs shell services.
 - **Static checks** that fail the build on drift between manifests, i18n, metadata, annotations and mock data. A mutation test proved it catches the bugs it was written for.
+- **Load time measured, not guessed:** on a simulated Zimbabwean 4G connection, opening Loan Applications from the launchpad went from 8.8 s to 3.3 s (343 → 67 requests) after bundling and background library loading, chosen from four measured variants.
 - The tests found **three real defects** during the build: deep links in the flexible column layout, an annotation alias that corrupted action names, and an error that never reached the user. All are fixed and recorded in [ADR-0002](docs/adr/0002-gateway-error-format-and-annotation-alias.md).
 
 ## Documents
