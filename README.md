@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/momosto/insurehub-sap-fiori/actions/workflows/ci.yml/badge.svg)](https://github.com/momosto/insurehub-sap-fiori/actions/workflows/ci.yml)
 
-**Live demo:** https://momosto.github.io/insurehub-sap-fiori/ · **Status:** v0.1.0, three apps built and tested
+**Live demo:** https://momosto.github.io/insurehub-sap-fiori/ (first load of Loan Applications takes about 20 s: UI5 libraries come from the SAP CDN without preload bundles yet) · **Status:** v0.1.0, three apps built and tested
 **Stack:** SAPUI5 1.148 (Horizon) · OData V2 (SAP Gateway contracts) · Fiori elements V2 (List Report / Object Page) · freestyle SAPUI5 (Flexible Column Layout, VizFrame) · Fiori launchpad sandbox · MockServer · QUnit · OPA5 · ui5-test-runner · ESLint · GitHub Actions + Pages
 
 Three SAP Fiori apps for the fictional **InsureHub Group**, an insurer with a microfinance arm (LendHub). They sit on one Fiori launchpad. Each app talks to an OData V2 service shaped exactly like an SAP Gateway service, simulated in the browser by MockServer, so everything runs without an SAP system.

@@ -9,7 +9,7 @@ const puppeteer = require("puppeteer");
     if (m.type() === "error" && !/404|preload/i.test(m.text())) console.log("console.error:", m.text().slice(0, 300));
   });
   page.on("pageerror", (e) => console.log("pageerror:", e.message.slice(0, 300)));
-  await page.goto(url, { waitUntil: "networkidle0", timeout: 90000 });
+  await page.goto(url, { waitUntil: "load", timeout: 90000 });
   await new Promise((r) => setTimeout(r, +wait));
   await page.screenshot({ path: out });
   await browser.close();
