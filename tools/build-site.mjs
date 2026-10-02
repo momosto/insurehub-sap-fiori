@@ -2,10 +2,12 @@
 //   dist/index.html            landing page (links to the launchpad and each app)
 //   dist/launchpad/            Fiori launchpad sandbox with the three tiles
 //   dist/appconfig/            launchpad tiles and target mappings
-//   dist/apps/<app>/webapp/    the apps themselves (tests included, so reviewers can run them in the browser)
+//   dist/apps/<app>/webapp/    each app built with UI5 Tooling: its modules bundled into Component-preload.js
+//                              (one request instead of ~15), tests and mock service kept as separate files
 // UI5 loads from the SAP CDN and every app talks to its MockServer, so no backend is needed.
-import { cpSync, mkdirSync, rmSync, writeFileSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { cpSync, mkdirSync, rmSync, writeFileSync, readFileSync, readdirSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -13,8 +15,19 @@ const dist = join(root, "dist");
 
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist);
-for (const dir of ["apps", "launchpad", "appconfig"]) {
+for (const dir of ["launchpad", "appconfig"]) {
 	cpSync(join(root, dir), join(dist, dir), { recursive: true });
+}
+for (const app of readdirSync(join(root, "apps"))) {
+	const cwd = join(root, "apps", app);
+	// relative destination: no spaces, so it survives the Windows shell
+	const dest = relative(cwd, join(dist, "apps", app, "webapp")).split("\\").join("/");
+	execFileSync(process.platform === "win32" ? "npx.cmd" : "npx", ["ui5", "build", "--dest", dest, "--clean-dest"], {
+		cwd,
+		stdio: ["ignore", "ignore", "inherit"],
+		shell: process.platform === "win32"
+	});
+	console.log(`built apps/${app}`);
 }
 
 const version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;

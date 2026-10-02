@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@ui5/cli": "^4.0.70",
     "eslint": "^10.11.0",
     "globals": "^17.13.0",
     "http-server": "^14.1.1",

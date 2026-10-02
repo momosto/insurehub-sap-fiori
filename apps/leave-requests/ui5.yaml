@@ -1,0 +1,12 @@
+specVersion: "4.0"
+metadata:
+  name: insurehub.hr.leaverequests
+type: application
+# UI5 itself comes from the SAP CDN (see index.html), so there is no framework section: the build only
+# bundles this app's modules into Component-preload.js. Tests and the mock service stay as separate files
+# (the launchpad and test pages load them on purpose) but are kept out of the bundle.
+builder:
+  componentPreload:
+    excludes:
+      - "insurehub/hr/leaverequests/test/**"
+      - "insurehub/hr/leaverequests/localService/**"
