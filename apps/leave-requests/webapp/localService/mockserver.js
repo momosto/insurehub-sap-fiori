@@ -73,6 +73,10 @@ sap.ui.define([
 
 	return {
 		init: function () {
+			// OPA journeys start the app several times; each start gets a fresh copy of the data
+			if (oMockServer) {
+				oMockServer.destroy();
+			}
 			oMockServer = new MockServer({ rootUri: ROOT_URI });
 
 			MockServer.config({

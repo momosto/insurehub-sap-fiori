@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>InsureHub Group · Fiori launchpad (sandbox)</title>
+	<script>
+		// Tiles, groups and the intent → app mapping live in ../appconfig/fioriSandboxConfig.json, which the
+		// sandbox merges last (after its own defaults). Apps talk to MockServer instances started in init.js.
+		window["sap-ushell-config"] = {
+			defaultRenderer: "fiori2",
+			renderers: { fiori2: { componentData: { config: { enableSearch: false, rootIntent: "Shell-home" } } } }
+		};
+	</script>
+	<script id="sap-ushell-bootstrap" src="https://ui5.sap.com/1.148.11/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+	<script
+		id="sap-ui-bootstrap"
+		src="https://ui5.sap.com/1.148.11/resources/sap-ui-core.js"
+		data-sap-ui-libs="sap.m, sap.ushell"
+		data-sap-ui-theme="sap_horizon"
+		data-sap-ui-compat-version="edge"
+		data-sap-ui-async="true"
+		data-sap-ui-frame-options="allow"
+		data-sap-ui-flex-settings='{ "layers": ["CUSTOMER"] }'
+		data-sap-ui-resource-roots='{
+			"insurehub.launchpad": "./",
+			"insurehub.hr.leaverequests": "../apps/leave-requests/webapp/",
+			"insurehub.lending.loanapplications": "../apps/loan-applications/webapp/",
+			"insurehub.claims.insights": "../apps/claims-insights/webapp/"
+		}'
+		data-sap-ui-on-init="module:insurehub/launchpad/init">
+	</script>
+</head>
+<body class="sapUiBody" id="content"></body>
+</html>

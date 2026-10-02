@@ -17,7 +17,23 @@ sap.ui.define([
 			this.setModel(models.createDeviceModel(), "device");
 			this.setModel(models.createAppViewModel(), "appView");
 
+			// Attached here, not in the App controller: the root view is created asynchronously,
+			// so on a deep link the first route would match before the controller exists.
+			this.getRouter().attachBeforeRouteMatched(this._onBeforeRouteMatched, this);
 			this.getRouter().initialize();
+		},
+
+		/**
+		 * One column for the list, two for list + detail. A full-screen detail
+		 * stays full screen when the user moves to another request.
+		 */
+		_onBeforeRouteMatched: function (oEvent) {
+			var oAppView = this.getModel("appView");
+			if (oEvent.getParameter("name") === "list") {
+				oAppView.setProperty("/layout", "OneColumn");
+			} else if (oAppView.getProperty("/layout") !== "MidColumnFullScreen") {
+				oAppView.setProperty("/layout", "TwoColumnsMidExpanded");
+			}
 		},
 
 		/**

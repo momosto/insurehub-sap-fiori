@@ -1,0 +1,26 @@
+[
+  {
+    "Branch": "HRE1",
+    "BranchName": "Harare CBD"
+  },
+  {
+    "Branch": "HRE2",
+    "BranchName": "Borrowdale"
+  },
+  {
+    "Branch": "BYO1",
+    "BranchName": "Bulawayo Main"
+  },
+  {
+    "Branch": "GWE1",
+    "BranchName": "Gweru"
+  },
+  {
+    "Branch": "MUT1",
+    "BranchName": "Mutare"
+  },
+  {
+    "Branch": "MSV1",
+    "BranchName": "Masvingo"
+  }
+]

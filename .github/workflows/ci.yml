@@ -1,0 +1,66 @@
+# Lint + static checks + every QUnit/OPA5 page in headless Chrome; on main, publish the demo to GitHub Pages.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+        env: { PUPPETEER_SKIP_DOWNLOAD: "true" }
+      - name: ESLint
+        run: npm run lint
+      - name: Manifests, i18n keys, metadata, annotations and mock data agree
+        run: npm run check
+
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: QUnit and OPA5 (headless Chrome, UI5 from the SAP CDN)
+        run: npm test
+      - name: Test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui5-test-report
+          path: report/
+          retention-days: 14
+
+  pages:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [check, test]
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: dist }
+      - id: deploy
+        uses: actions/deploy-pages@v4

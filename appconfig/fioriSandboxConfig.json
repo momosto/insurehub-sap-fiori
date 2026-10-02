@@ -1,0 +1,104 @@
+{
+  "services": {
+    "LaunchPage": {
+      "adapter": {
+        "config": {
+          "groups": [
+            {
+              "id": "insurehub",
+              "title": "InsureHub Group",
+              "isPreset": true,
+              "isVisible": true,
+              "isGroupLocked": true,
+              "tiles": [
+                {
+                  "id": "tileLeave",
+                  "tileType": "sap.ushell.ui.tile.StaticTile",
+                  "properties": {
+                    "title": "Leave Requests",
+                    "subtitle": "HR self-service",
+                    "info": "Request and approve leave",
+                    "icon": "sap-icon://general-leave-request",
+                    "targetURL": "#LeaveRequest-manage"
+                  }
+                },
+                {
+                  "id": "tileLoans",
+                  "tileType": "sap.ushell.ui.tile.StaticTile",
+                  "properties": {
+                    "title": "Loan Applications",
+                    "subtitle": "LendHub credit",
+                    "info": "Approve or reject",
+                    "icon": "sap-icon://loan",
+                    "targetURL": "#LoanApplication-manage"
+                  }
+                },
+                {
+                  "id": "tileClaims",
+                  "tileType": "sap.ushell.ui.tile.StaticTile",
+                  "properties": {
+                    "title": "Claims Insights",
+                    "subtitle": "Claims analytics",
+                    "info": "KPIs by line and branch",
+                    "icon": "sap-icon://manager-insight",
+                    "targetURL": "#Claim-analyze"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "ClientSideTargetResolution": {
+      "adapter": {
+        "config": {
+          "inbounds": {
+            "LeaveRequest-manage": {
+              "semanticObject": "LeaveRequest",
+              "action": "manage",
+              "title": "Leave Requests",
+              "signature": {
+                "parameters": {},
+                "additionalParameters": "allowed"
+              },
+              "resolutionResult": {
+                "applicationType": "SAPUI5",
+                "additionalInformation": "SAPUI5.Component=insurehub.hr.leaverequests",
+                "url": "../apps/leave-requests/webapp"
+              }
+            },
+            "LoanApplication-manage": {
+              "semanticObject": "LoanApplication",
+              "action": "manage",
+              "title": "Loan Applications",
+              "signature": {
+                "parameters": {},
+                "additionalParameters": "allowed"
+              },
+              "resolutionResult": {
+                "applicationType": "SAPUI5",
+                "additionalInformation": "SAPUI5.Component=insurehub.lending.loanapplications",
+                "url": "../apps/loan-applications/webapp"
+              }
+            },
+            "Claim-analyze": {
+              "semanticObject": "Claim",
+              "action": "analyze",
+              "title": "Claims Insights",
+              "signature": {
+                "parameters": {},
+                "additionalParameters": "allowed"
+              },
+              "resolutionResult": {
+                "applicationType": "SAPUI5",
+                "additionalInformation": "SAPUI5.Component=insurehub.claims.insights",
+                "url": "../apps/claims-insights/webapp"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

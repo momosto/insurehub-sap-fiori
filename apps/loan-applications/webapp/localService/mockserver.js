@@ -39,8 +39,21 @@ sap.ui.define([
 		}));
 	}
 
+	/**
+	 * Same shape as an SAP Gateway error: "transition": true in errordetails tells UI5 the message belongs to
+	 * this request only, so Fiori elements shows it in a dialog instead of attaching it to the object.
+	 */
 	function errorResponse(oXhr, iStatus, sMessage) {
-		oXhr.respondJSON(iStatus, {}, JSON.stringify({ error: { code: "ZLOAN/" + iStatus, message: { lang: "en", value: sMessage } } }));
+		var sCode = "ZLOAN/" + iStatus;
+		oXhr.respondJSON(iStatus, {}, JSON.stringify({
+			error: {
+				code: sCode,
+				message: { lang: "en", value: sMessage },
+				innererror: {
+					errordetails: [{ code: sCode, message: sMessage, propertyref: "", severity: "error", target: "", transition: true }]
+				}
+			}
+		}));
 		return true;
 	}
 
@@ -89,6 +102,10 @@ sap.ui.define([
 
 	return {
 		init: function () {
+			// OPA journeys start the app several times; each start gets a fresh copy of the data
+			if (oMockServer) {
+				oMockServer.destroy();
+			}
 			oMockServer = new MockServer({ rootUri: ROOT_URI });
 
 			MockServer.config({

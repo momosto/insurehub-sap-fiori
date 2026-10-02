@@ -1,0 +1,8 @@
+/* KPI tiles wrap on small screens; charts get a fixed height so the page does not jump while loading */
+.insightsTile {
+	margin: 0 1rem 1rem 0;
+}
+
+.insightsChartCard {
+	height: 24rem;
+}

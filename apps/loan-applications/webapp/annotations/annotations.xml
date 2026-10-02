@@ -16,7 +16,7 @@
 		<edmx:Include Namespace="Org.OData.Core.V1" Alias="Core"/>
 	</edmx:Reference>
 	<edmx:Reference Uri="/sap/opu/odata/sap/ZLOAN_APPLICATION_SRV/$metadata">
-		<edmx:Include Namespace="ZLOAN_APPLICATION_SRV" Alias="SRV"/>
+		<edmx:Include Namespace="ZLOAN_APPLICATION_SRV" Alias="LoanSrv"/>
 	</edmx:Reference>
 	<edmx:DataServices>
 		<Schema Namespace="insurehub.lending.loanapplications.annotations" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -24,7 +24,7 @@
 			<!-- ========================================================= -->
 			<!-- Loan application: list report                              -->
 			<!-- ========================================================= -->
-			<Annotations Target="SRV.LoanApplication">
+			<Annotations Target="LoanSrv.LoanApplication">
 				<Annotation Term="UI.HeaderInfo">
 					<Record Type="UI.HeaderInfoType">
 						<PropertyValue Property="TypeName" String="Loan Application"/>
@@ -57,12 +57,12 @@
 					<Collection>
 						<Record Type="UI.DataFieldForAction">
 							<PropertyValue Property="Label" String="Approve"/>
-							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV.ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
 							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
 						</Record>
 						<Record Type="UI.DataFieldForAction">
 							<PropertyValue Property="Label" String="Reject"/>
-							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV.ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
 							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
 						</Record>
 						<Record Type="UI.DataField">
@@ -273,12 +273,12 @@
 					<Collection>
 						<Record Type="UI.DataFieldForAction">
 							<PropertyValue Property="Label" String="Approve"/>
-							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV.ZLOAN_APPLICATION_SRV_Entities/ApproveApplication"/>
 							<PropertyValue Property="Determining" Bool="true"/>
 						</Record>
 						<Record Type="UI.DataFieldForAction">
 							<PropertyValue Property="Label" String="Reject"/>
-							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
+							<PropertyValue Property="Action" String="ZLOAN_APPLICATION_SRV.ZLOAN_APPLICATION_SRV_Entities/RejectApplication"/>
 							<PropertyValue Property="Determining" Bool="true"/>
 						</Record>
 					</Collection>
@@ -391,7 +391,7 @@
 			<!-- ========================================================= -->
 			<!-- Texts and value helps                                      -->
 			<!-- ========================================================= -->
-			<Annotations Target="SRV.LoanApplication/Product">
+			<Annotations Target="LoanSrv.LoanApplication/Product">
 				<Annotation Term="Common.Text" Path="ProductName">
 					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
 				</Annotation>
@@ -421,7 +421,7 @@
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.LoanApplication/Branch">
+			<Annotations Target="LoanSrv.LoanApplication/Branch">
 				<Annotation Term="Common.Text" Path="BranchName">
 					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
 				</Annotation>
@@ -448,7 +448,7 @@
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.LoanApplication/Status">
+			<Annotations Target="LoanSrv.LoanApplication/Status">
 				<Annotation Term="Common.Text" Path="StatusText">
 					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
 				</Annotation>
@@ -471,13 +471,13 @@
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.StatusVH/Status">
+			<Annotations Target="LoanSrv.StatusVH/Status">
 				<Annotation Term="Common.Text" Path="StatusText">
 					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.LoanApplication/RiskBand">
+			<Annotations Target="LoanSrv.LoanApplication/RiskBand">
 				<Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
 				<Annotation Term="Common.ValueList">
 					<Record Type="Common.ValueListType">
@@ -497,26 +497,26 @@
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.RiskBandVH/RiskBand">
+			<Annotations Target="LoanSrv.RiskBandVH/RiskBand">
 				<Annotation Term="Common.Text" Path="Description">
 					<Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/>
 				</Annotation>
 			</Annotations>
 
-			<Annotations Target="SRV.LoanApplication/IsDecidable">
+			<Annotations Target="LoanSrv.LoanApplication/IsDecidable">
 				<Annotation Term="UI.Hidden" Bool="true"/>
 			</Annotations>
-			<Annotations Target="SRV.LoanApplication/RiskCriticality">
+			<Annotations Target="LoanSrv.LoanApplication/RiskCriticality">
 				<Annotation Term="UI.Hidden" Bool="true"/>
 			</Annotations>
-			<Annotations Target="SRV.LoanApplication/StatusCriticality">
+			<Annotations Target="LoanSrv.LoanApplication/StatusCriticality">
 				<Annotation Term="UI.Hidden" Bool="true"/>
 			</Annotations>
 
 			<!-- ========================================================= -->
 			<!-- Instalments (repayment schedule table and sub-page)        -->
 			<!-- ========================================================= -->
-			<Annotations Target="SRV.Instalment">
+			<Annotations Target="LoanSrv.Instalment">
 				<Annotation Term="UI.HeaderInfo">
 					<Record Type="UI.HeaderInfoType">
 						<PropertyValue Property="TypeName" String="Instalment"/>

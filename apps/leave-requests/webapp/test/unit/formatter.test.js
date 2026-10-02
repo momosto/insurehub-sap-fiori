@@ -1,4 +1,3 @@
-/*global QUnit */
 sap.ui.define([
 	"insurehub/hr/leaverequests/model/formatter",
 	"sap/ui/core/library"

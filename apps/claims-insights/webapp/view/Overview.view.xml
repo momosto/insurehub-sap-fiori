@@ -1,0 +1,212 @@
+<mvc:View
+	controllerName="insurehub.claims.insights.controller.Overview"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:card="sap.f.cards"
+	xmlns:l="sap.ui.layout"
+	xmlns:viz="sap.viz.ui5.controls"
+	xmlns:vizData="sap.viz.ui5.data"
+	xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds"
+	displayBlock="true"
+	height="100%">
+	<App id="app">
+		<f:DynamicPage id="page" busy="{insights>/busy}" busyIndicatorDelay="0" showFooter="false" headerExpanded="true">
+			<f:title>
+				<f:DynamicPageTitle>
+					<f:heading>
+						<Title text="{i18n>pageTitle}" level="H2"/>
+					</f:heading>
+					<f:expandedContent>
+						<Text id="subtitle" text="{parts: ['i18n>pageSubtitle', 'insights>/filter/months'], formatter: '.formatMessage'}"/>
+					</f:expandedContent>
+					<f:actions>
+						<Button id="resetButton" text="{i18n>resetFilters}" type="Transparent" icon="sap-icon://reset" press=".onReset"/>
+					</f:actions>
+				</f:DynamicPageTitle>
+			</f:title>
+
+			<f:header>
+				<f:DynamicPageHeader pinnable="true">
+					<HBox wrap="Wrap" alignItems="End">
+						<VBox class="sapUiMediumMarginEnd sapUiSmallMarginBottom">
+							<Label text="{i18n>filterPeriod}" labelFor="periodButton"/>
+							<SegmentedButton id="periodButton" width="22rem" selectedKey="{insights>/filter/monthsKey}" selectionChange=".onPeriodChange">
+								<items>
+									<SegmentedButtonItem key="3" text="{i18n>period3}"/>
+									<SegmentedButtonItem key="6" text="{i18n>period6}"/>
+									<SegmentedButtonItem key="12" text="{i18n>period12}"/>
+								</items>
+							</SegmentedButton>
+						</VBox>
+						<VBox class="sapUiMediumMarginEnd sapUiSmallMarginBottom">
+							<Label text="{i18n>filterProductLine}" labelFor="productLineSelect"/>
+							<Select id="productLineSelect" selectedKey="{insights>/filter/productLine}" change=".onFilterChange"
+								items="{insights>/options/productLines}" width="12rem">
+								<core:Item key="{insights>key}" text="{insights>text}"/>
+							</Select>
+						</VBox>
+						<VBox class="sapUiSmallMarginBottom">
+							<Label text="{i18n>filterBranch}" labelFor="branchSelect"/>
+							<Select id="branchSelect" selectedKey="{insights>/filter/branch}" change=".onFilterChange"
+								items="{insights>/options/branches}" width="14rem">
+								<core:Item key="{insights>key}" text="{insights>text}"/>
+							</Select>
+						</VBox>
+					</HBox>
+				</f:DynamicPageHeader>
+			</f:header>
+
+			<f:content>
+				<VBox>
+					<MessageStrip id="errorStrip" type="Error" text="{i18n>loadError}" visible="{insights>/loadFailed}" showIcon="true" class="sapUiSmallMarginBottom"/>
+
+					<!-- KPI tiles -->
+					<HBox id="kpiTiles" wrap="Wrap">
+						<GenericTile id="tileClaims" class="insightsTile" header="{i18n>kpiClaims}" frameType="OneByOne">
+							<TileContent footer="{parts: ['i18n>kpiClaimsFooter', 'insights>/kpis/open'], formatter: '.formatMessage'}">
+								<NumericContent value="{insights>/kpis/count}" withMargin="false" icon="sap-icon://customer-history"/>
+							</TileContent>
+						</GenericTile>
+						<GenericTile id="tileClaimed" class="insightsTile" header="{i18n>kpiClaimed}" subheader="USD" frameType="OneByOne">
+							<TileContent>
+								<NumericContent value="{path: 'insights>/kpis/claimed', formatter: '.formatter.thousands'}" scale="K" truncateValueTo="6" withMargin="false"/>
+							</TileContent>
+						</GenericTile>
+						<GenericTile id="tilePaid" class="insightsTile" header="{i18n>kpiPaid}" subheader="USD" frameType="OneByOne">
+							<TileContent footer="{parts: ['i18n>kpiPaidFooter', 'insights>/kpis/paidRatio'], formatter: '.formatMessage'}">
+								<NumericContent value="{path: 'insights>/kpis/paid', formatter: '.formatter.thousands'}" scale="K" truncateValueTo="6" withMargin="false"/>
+							</TileContent>
+						</GenericTile>
+						<GenericTile id="tileDays" class="insightsTile" header="{i18n>kpiDaysToSettle}" frameType="OneByOne">
+							<TileContent unit="{i18n>days}">
+								<NumericContent value="{insights>/kpis/avgDaysToSettle}" withMargin="false"
+									valueColor="{path: 'insights>/kpis/avgDaysToSettle', formatter: '.formatter.settleColor'}"/>
+							</TileContent>
+						</GenericTile>
+						<GenericTile id="tileRejection" class="insightsTile" header="{i18n>kpiRejection}" frameType="OneByOne">
+							<TileContent footer="{i18n>kpiRejectionFooter}">
+								<NumericContent value="{insights>/kpis/rejectionRate}" scale="%" withMargin="false"
+									valueColor="{path: 'insights>/kpis/rejectionRate', formatter: '.formatter.rejectionColor'}"/>
+							</TileContent>
+						</GenericTile>
+						<GenericTile id="tileFlagged" class="insightsTile" header="{i18n>kpiFlagged}" frameType="OneByOne">
+							<TileContent footer="{i18n>kpiFlaggedFooter}">
+								<NumericContent value="{insights>/kpis/flagged}" withMargin="false" icon="sap-icon://flag"
+									valueColor="{= ${insights>/kpis/flagged} > 0 ? 'Critical' : 'Good' }"/>
+							</TileContent>
+						</GenericTile>
+					</HBox>
+
+					<!-- Charts -->
+					<l:Grid defaultSpan="XL4 L4 M12 S12" vSpacing="1" hSpacing="1">
+						<f:Card class="insightsChartCard">
+							<f:header>
+								<card:Header title="{i18n>chartByLine}"/>
+							</f:header>
+							<f:content>
+								<viz:VizFrame id="lineChart" vizType="column" width="100%" height="20rem" uiConfig="{applicationSet: 'fiori'}">
+									<viz:dataset>
+										<vizData:FlattenedDataset data="{insights>/byLine}">
+											<vizData:dimensions>
+												<vizData:DimensionDefinition name="Product line" value="{insights>text}"/>
+											</vizData:dimensions>
+											<vizData:measures>
+												<vizData:MeasureDefinition name="Claimed" value="{insights>claimed}"/>
+												<vizData:MeasureDefinition name="Paid" value="{insights>paid}"/>
+											</vizData:measures>
+										</vizData:FlattenedDataset>
+									</viz:dataset>
+									<viz:feeds>
+										<vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Claimed,Paid"/>
+										<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Product line"/>
+									</viz:feeds>
+								</viz:VizFrame>
+							</f:content>
+						</f:Card>
+						<f:Card class="insightsChartCard">
+							<f:header>
+								<card:Header title="{i18n>chartMonthly}"/>
+							</f:header>
+							<f:content>
+								<viz:VizFrame id="monthlyChart" vizType="line" width="100%" height="20rem" uiConfig="{applicationSet: 'fiori'}">
+									<viz:dataset>
+										<vizData:FlattenedDataset data="{insights>/monthly}">
+											<vizData:dimensions>
+												<vizData:DimensionDefinition name="Month" value="{insights>month}"/>
+											</vizData:dimensions>
+											<vizData:measures>
+												<vizData:MeasureDefinition name="Claims" value="{insights>count}"/>
+											</vizData:measures>
+										</vizData:FlattenedDataset>
+									</viz:dataset>
+									<viz:feeds>
+										<vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Claims"/>
+										<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Month"/>
+									</viz:feeds>
+								</viz:VizFrame>
+							</f:content>
+						</f:Card>
+						<f:Card class="insightsChartCard">
+							<f:header>
+								<card:Header title="{i18n>chartStatus}"/>
+							</f:header>
+							<f:content>
+								<viz:VizFrame id="statusChart" vizType="donut" width="100%" height="20rem" uiConfig="{applicationSet: 'fiori'}">
+									<viz:dataset>
+										<vizData:FlattenedDataset data="{insights>/statusMix}">
+											<vizData:dimensions>
+												<vizData:DimensionDefinition name="Status" value="{insights>text}"/>
+											</vizData:dimensions>
+											<vizData:measures>
+												<vizData:MeasureDefinition name="Claims" value="{insights>count}"/>
+											</vizData:measures>
+										</vizData:FlattenedDataset>
+									</viz:dataset>
+									<viz:feeds>
+										<vizFeeds:FeedItem uid="size" type="Measure" values="Claims"/>
+										<vizFeeds:FeedItem uid="color" type="Dimension" values="Status"/>
+									</viz:feeds>
+								</viz:VizFrame>
+							</f:content>
+						</f:Card>
+					</l:Grid>
+
+					<!-- Branch breakdown -->
+					<Table id="branchTable" items="{insights>/byBranch}" noDataText="{i18n>noData}" class="sapUiSmallMarginTop"
+						popinLayout="GridSmall">
+						<headerToolbar>
+							<OverflowToolbar>
+								<Title id="branchTableTitle" text="{parts: ['i18n>branchTableTitle', 'insights>/byBranch/length'], formatter: '.formatMessage'}" level="H3"/>
+							</OverflowToolbar>
+						</headerToolbar>
+						<columns>
+							<Column><Text text="{i18n>colBranch}"/></Column>
+							<Column hAlign="End"><Text text="{i18n>colClaims}"/></Column>
+							<Column hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>colClaimed}"/></Column>
+							<Column hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>colPaid}"/></Column>
+							<Column hAlign="End" minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>colDays}"/></Column>
+							<Column hAlign="End"><Text text="{i18n>colRejection}"/></Column>
+							<Column hAlign="End" minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>colFlagged}"/></Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Navigation" press=".onBranchPress" tooltip="{i18n>branchTooltip}">
+								<cells>
+									<ObjectIdentifier title="{insights>text}" text="{insights>key}"/>
+									<ObjectNumber number="{insights>count}"/>
+									<ObjectNumber number="{path: 'insights>claimed', formatter: '.formatter.amount'}" unit="USD"/>
+									<ObjectNumber number="{path: 'insights>paid', formatter: '.formatter.amount'}" unit="USD"/>
+									<ObjectNumber number="{insights>avgDaysToSettle}" unit="{i18n>days}"/>
+									<ObjectNumber number="{insights>rejectionRate}" unit="%"
+										state="{path: 'insights>rejectionRate', formatter: '.formatter.rejectionState'}"/>
+									<ObjectNumber number="{insights>flagged}" state="{= ${insights>flagged} > 0 ? 'Warning' : 'None' }"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</VBox>
+			</f:content>
+		</f:DynamicPage>
+	</App>
+</mvc:View>

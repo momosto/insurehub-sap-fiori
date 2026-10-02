@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+	xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="ZCLAIMS_INSIGHTS_SRV" xml:lang="en" sap:schema-version="1"
+			xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+
+			<EntityType Name="Claim" sap:label="Claim" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ClaimID"/>
+				</Key>
+				<Property Name="ClaimID" Type="Edm.String" Nullable="false" MaxLength="12" sap:label="Claim"/>
+				<Property Name="PolicyNumber" Type="Edm.String" MaxLength="20" sap:label="Policy"/>
+				<Property Name="ProductLine" Type="Edm.String" MaxLength="3" sap:label="Product Line" sap:text="ProductLineText"/>
+				<Property Name="ProductLineText" Type="Edm.String" MaxLength="20" sap:label="Product Line"/>
+				<Property Name="Branch" Type="Edm.String" MaxLength="4" sap:label="Branch" sap:text="BranchName"/>
+				<Property Name="BranchName" Type="Edm.String" MaxLength="40" sap:label="Branch"/>
+				<Property Name="LossDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Date of Loss"/>
+				<Property Name="ReportedOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Reported On"/>
+				<Property Name="Status" Type="Edm.String" MaxLength="4" sap:label="Status" sap:text="StatusText"/>
+				<Property Name="StatusText" Type="Edm.String" MaxLength="20" sap:label="Status"/>
+				<Property Name="ClaimedAmount" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Claimed"/>
+				<Property Name="PaidAmount" Type="Edm.Decimal" Precision="15" Scale="2" sap:unit="Currency" sap:label="Paid"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:semantics="currency-code"/>
+				<Property Name="DaysToSettle" Type="Edm.Int32" Nullable="true" sap:label="Days to Settle"/>
+				<Property Name="RiskBand" Type="Edm.String" MaxLength="1" sap:label="ClaimGuard Risk Band"/>
+				<Property Name="Flagged" Type="Edm.Boolean" sap:label="Flagged for Review"/>
+			</EntityType>
+
+			<EntityType Name="ProductLine" sap:label="Product Line" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ProductLine"/>
+				</Key>
+				<Property Name="ProductLine" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Product Line"/>
+				<Property Name="ProductLineText" Type="Edm.String" MaxLength="20" sap:label="Description"/>
+			</EntityType>
+
+			<EntityType Name="Branch" sap:label="Branch" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Branch"/>
+				</Key>
+				<Property Name="Branch" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="Branch"/>
+				<Property Name="BranchName" Type="Edm.String" MaxLength="40" sap:label="Branch Name"/>
+			</EntityType>
+
+			<EntityContainer Name="ZCLAIMS_INSIGHTS_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet Name="Claims" EntityType="ZCLAIMS_INSIGHTS_SRV.Claim" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="ProductLines" EntityType="ZCLAIMS_INSIGHTS_SRV.ProductLine" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+				<EntitySet Name="Branches" EntityType="ZCLAIMS_INSIGHTS_SRV.Branch" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
