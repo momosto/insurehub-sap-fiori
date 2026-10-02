@@ -12,7 +12,9 @@ const APPS = [
 	{ name: "Leave Requests", hash: "#LeaveRequest-manage", ready: ".sapMObjLItem" },
 	{ name: "Loan Applications", hash: "#LoanApplication-manage", ready: ".sapMListTblRow" },
 	// ready when the "Claims reported" tile shows a number (read through the UI5 API, not DOM classes)
-	{ name: "Claims Insights", hash: "#Claim-analyze", ready: null }
+	{ name: "Claims Insights", hash: "#Claim-analyze", ready: null },
+	// the usual path: land on the home page, read it for 5 s, then open the tile (time counted from the tap)
+	{ name: "Loan Applications via tile", hash: "", ready: ".sapMListTblRow", viaTile: "#LoanApplication-manage" }
 ];
 
 const PROFILES = {
@@ -21,7 +23,7 @@ const PROFILES = {
 };
 let network = null;
 
-async function measure(browser, url, selector) {
+async function measure(browser, url, selector, viaTile) {
 	const page = await browser.newPage();
 	await page.setCacheEnabled(false);
 	if (network) {
@@ -39,8 +41,15 @@ async function measure(browser, url, selector) {
 		const len = Number(res.headers()["content-length"] || 0);
 		counts.bytes += len;
 	});
-	const t0 = Date.now();
+	let t0 = Date.now();
 	await page.goto(url, { waitUntil: "domcontentloaded", timeout: 180000 });
+	if (viaTile) {
+		await page.waitForFunction(() => document.querySelectorAll(".sapUshellTile, .sapMGT").length > 0, { timeout: 180000 });
+		await new Promise((r) => setTimeout(r, 5000));
+		Object.keys(counts).forEach((k) => { counts[k] = 0; });
+		t0 = Date.now();
+		await page.evaluate((hash) => { window.location.hash = hash; }, viaTile);
+	}
 	await page.waitForFunction((sel) => {
 		if (sel) {
 			return document.querySelectorAll(sel).length > 0;
@@ -69,9 +78,9 @@ const median = (xs) => xs.slice().sort((a, b) => a - b)[Math.floor(xs.length / 2
 	for (const app of APPS) {
 		const results = [];
 		// one unmeasured warm-up per app so a slow first CDN connection does not skew the median
-		await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready).catch(() => {});
+		await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready, app.viaTile).catch(() => {});
 		for (let i = 0; i < runs; i++) {
-			results.push(await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready));
+			results.push(await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready, app.viaTile));
 		}
 		const m = (k) => median(results.map((r) => r[k]));
 		console.log(`| ${app.name} | ${m("seconds").toFixed(1)} s | ${m("total")} | ${m("cdn")} | ${m("single")} |`);
