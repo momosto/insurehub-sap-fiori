@@ -1,0 +1,27 @@
+# On demand: how long each app takes to show data in the launchpad, measured on a GitHub runner
+# (clean network, no cache). Results go to the job summary; copy them into docs/perf/ when they matter.
+name: perf
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs: { description: "Runs per app (median is reported)", default: "3" }
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Build and serve the site exactly as GitHub Pages would
+        run: |
+          npm run build
+          npx http-server dist -p 8080 -c-1 --silent &
+          sleep 3
+      - name: Measure
+        run: node tools/measure-load.cjs http://localhost:8080 "${{ inputs.runs }}" | tee -a "$GITHUB_STEP_SUMMARY"
