@@ -1,7 +1,9 @@
 /* global document, sap, window -- used inside page.waitForFunction, which runs in the browser */
 // Measures how long each app takes to show data inside the launchpad, and how many requests it needs.
-// Usage: node tools/measure-load.cjs <base-url> [runs]
-//   e.g. node tools/measure-load.cjs http://localhost:8080 3
+// Usage: node tools/measure-load.cjs <base-url> [runs] [profile]
+//   e.g. node tools/measure-load.cjs http://localhost:8080 3 mobile
+// Profiles: "fast" (no throttling) or "mobile" (150 ms latency, 5 Mbit/s down, 2 Mbit/s up: a typical
+// Zimbabwean 4G connection to a CDN edge abroad), where request count matters more than bytes.
 // Prints a Markdown table (median of the runs) so results can be pasted into docs/perf/.
 const puppeteer = require("puppeteer");
 
@@ -13,9 +15,18 @@ const APPS = [
 	{ name: "Claims Insights", hash: "#Claim-analyze", ready: null }
 ];
 
+const PROFILES = {
+	fast: null,
+	mobile: { offline: false, latency: 150, downloadThroughput: (5 * 1024 * 1024) / 8, uploadThroughput: (2 * 1024 * 1024) / 8 }
+};
+let network = null;
+
 async function measure(browser, url, selector) {
 	const page = await browser.newPage();
 	await page.setCacheEnabled(false);
+	if (network) {
+		await page.emulateNetworkConditions({ download: network.downloadThroughput, upload: network.uploadThroughput, latency: network.latency });
+	}
 	const counts = { total: 0, cdn: 0, single: 0, bytes: 0 };
 	page.on("requestfinished", async (req) => {
 		counts.total++;
@@ -46,8 +57,12 @@ async function measure(browser, url, selector) {
 const median = (xs) => xs.slice().sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 
 (async () => {
-	const [base, runsArg = "3"] = process.argv.slice(2);
+	const [base, runsArg = "3", profile = "fast"] = process.argv.slice(2);
 	const runs = Number(runsArg);
+	network = PROFILES[profile];
+	console.log(`
+**Network: ${profile}**
+`);
 	const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1280, height: 800 } });
 	console.log("| App | Time to data (median of " + runs + ") | Requests | CDN requests | Single CDN modules |");
 	console.log("|---|---|---|---|---|");
