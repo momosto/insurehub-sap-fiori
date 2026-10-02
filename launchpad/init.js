@@ -12,13 +12,19 @@ sap.ui.define([
 
 	sap.ushell.Container.createRenderer("fiori2", true).then(function (oRenderer) {
 		oRenderer.placeAt("content");
-		warmUpFioriElements();
+		// only where it pays off: on the home page (the user may open the tile next) or the app itself;
+		// opening Leave Requests or Claims Insights directly should not compete with ~10 large downloads
+		var sHash = window.location.hash;
+		if (!sHash || /^#(Shell-home|LoanApplication-)/.test(sHash)) {
+			warmUpFioriElements();
+		}
 	});
 
 	/*
 	 * Loan Applications (Fiori elements) needs ~10 libraries. Loaded on demand, their modules arrive one
 	 * request at a time before the library bundles do (300+ requests). Starting the bundles in the background
 	 * once the shell is up keeps the home page light and makes the app open from a few large files instead.
+	 * Measured with tools/measure-load.cjs: docs/perf/2026-10-02-load-times.md.
 	 */
 	function warmUpFioriElements() {
 		sap.ui.require(["sap/ui/core/Lib"], function (Lib) {
