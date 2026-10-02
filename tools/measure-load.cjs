@@ -1,4 +1,4 @@
-/* global document -- used inside page.waitForFunction, which runs in the browser */
+/* global document, sap, window -- used inside page.waitForFunction, which runs in the browser */
 // Measures how long each app takes to show data inside the launchpad, and how many requests it needs.
 // Usage: node tools/measure-load.cjs <base-url> [runs]
 //   e.g. node tools/measure-load.cjs http://localhost:8080 3
@@ -9,7 +9,8 @@ const APPS = [
 	{ name: "Launchpad home", hash: "", ready: ".sapUshellTile, .sapMGT" },
 	{ name: "Leave Requests", hash: "#LeaveRequest-manage", ready: ".sapMObjLItem" },
 	{ name: "Loan Applications", hash: "#LoanApplication-manage", ready: ".sapMListTblRow" },
-	{ name: "Claims Insights", hash: "#Claim-analyze", ready: ".sapMGT .sapMNCValueScr" }
+	// ready when the "Claims reported" tile shows a number (read through the UI5 API, not DOM classes)
+	{ name: "Claims Insights", hash: "#Claim-analyze", ready: null }
 ];
 
 async function measure(browser, url, selector) {
@@ -29,7 +30,14 @@ async function measure(browser, url, selector) {
 	});
 	const t0 = Date.now();
 	await page.goto(url, { waitUntil: "domcontentloaded", timeout: 180000 });
-	await page.waitForFunction((sel) => document.querySelectorAll(sel).length > 0, { timeout: 180000, polling: 100 }, selector);
+	await page.waitForFunction((sel) => {
+		if (sel) {
+			return document.querySelectorAll(sel).length > 0;
+		}
+		var Element = window.sap && sap.ui && sap.ui.core && sap.ui.core.Element;
+		var tile = Element && Element.registry && Element.registry.filter((e) => /--tileClaims$/.test(e.getId()))[0];
+		return !!tile && !!tile.getTileContent()[0].getContent().getValue();
+	}, { timeout: 180000, polling: 100 }, selector);
 	const seconds = (Date.now() - t0) / 1000;
 	await page.close();
 	return { seconds, ...counts };
@@ -45,6 +53,8 @@ const median = (xs) => xs.slice().sort((a, b) => a - b)[Math.floor(xs.length / 2
 	console.log("|---|---|---|---|---|");
 	for (const app of APPS) {
 		const results = [];
+		// one unmeasured warm-up per app so a slow first CDN connection does not skew the median
+		await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready).catch(() => {});
 		for (let i = 0; i < runs; i++) {
 			results.push(await measure(browser, `${base}/launchpad/index.html${app.hash}`, app.ready));
 		}
